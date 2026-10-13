@@ -55,6 +55,27 @@ app.get("/api/flights", async (req, res) => {
     }
 });
 
+app.get("/api/flights/search", async (req, res) => {
+    try {
+        const query = req.query.q || "";
+
+        const result = await pool.query(`
+            SELECT "Id", "FlightNumber", "Departure", "Arrival", "Price", "IsAvailable", "Description"
+            FROM "Flights"
+            WHERE
+                "FlightNumber" ILIKE $1 OR
+                "Departure" ILIKE $1 OR
+                "Arrival" ILIKE $1
+            ORDER BY "Id"
+        `, [`%${query}%`]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Ошибка поиска" });
+    }
+});
+
 app.get("/api/flights/:id", async (req, res) => {
     try {
         const id = Number(req.params.id);
@@ -85,6 +106,14 @@ app.post("/api/flights", async (req, res) => {
     try {
         const { flightNumber, departure, arrival, price, isAvailable, description } = req.body;
 
+        if (!flightNumber || !departure || !arrival || price === undefined) {
+            return res.status(400).json({ error: "Некорректные данные рейса" });
+        }
+
+        if (price <= 0) {
+            return res.status(400).json({ error: "Цена должна быть больше 0" });
+        }
+
         const result = await pool.query(`
             INSERT INTO "Flights"
                 ("FlightNumber", "Departure", "Arrival", "Price", "IsAvailable", "Description")
@@ -104,15 +133,17 @@ app.put("/api/flights/:id", async (req, res) => {
         const id = Number(req.params.id);
         const { flightNumber, departure, arrival, price, isAvailable, description } = req.body;
 
+        if (!flightNumber || !departure || !arrival || price === undefined) {
+            return res.status(400).json({ error: "Некорректные данные рейса" });
+        }
+        if (price <= 0) {
+            return res.status(400).json({ error: "Цена должна быть больше 0" });
+        }
+
         const result = await pool.query(`
             UPDATE "Flights"
-            SET
-                "FlightNumber" = $1,
-                "Departure" = $2,
-                "Arrival" = $3,
-                "Price" = $4,
-                "IsAvailable" = $5,
-                "Description" = $6
+            SET "FlightNumber" = $1, "Departure" = $2, "Arrival" = $3,
+                "Price" = $4, "IsAvailable" = $5, "Description" = $6
             WHERE "Id" = $7
             RETURNING *
         `, [flightNumber, departure, arrival, price, isAvailable, description || "", id]);
@@ -148,6 +179,10 @@ app.delete("/api/flights/:id", async (req, res) => {
         console.error(error);
         res.status(500).json({ error: "Ошибка удаления рейса" });
     }
+});
+
+app.use((req, res) => {
+    res.status(404).json({ error: "Маршрут не найден" });
 });
 
 app.listen(port, "0.0.0.0", () => {

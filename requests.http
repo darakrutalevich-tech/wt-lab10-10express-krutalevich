@@ -36,4 +36,36 @@ Content-Type: application/json
   "description": "Обновлённое описание"
 }
 
-DELETE {{host}}/api/flights/5
+### POST с пустыми полями
+POST {{host}}/api/flights
+Content-Type: application/json
+
+{
+  "flightNumber": "",
+  "departure": "Минск",
+  "arrival": "Прага",
+  "price": 300,
+  "isAvailable": true
+}
+
+### POST с отрицательной ценой
+POST {{host}}/api/flights
+Content-Type: application/json
+
+{
+  "flightNumber": "AV-000",
+  "departure": "Минск",
+  "arrival": "Прага",
+  "price": -100,
+  "isAvailable": true
+}
+
+### POST без price
+POST {{host}}/api/flights
+Content-Type: application/json
+
+{
+  "flightNumber": "AV-000",
+  "departure": "Минск",
+  "arrival": "Прага"
+}
