@@ -1,0 +1,13 @@
+@host = http://localhost:3000
+
+GET {{host}}/
+
+GET {{host}}/api/info
+
+POST {{host}}/api/test
+Content-Type: application/json
+
+{
+  "name": "Ноутбук",
+  "price": 2500
+}
