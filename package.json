@@ -1,0 +1,15 @@
+{
+  "name": "wt-lab10-10express-krutalevich",
+  "version": "1.0.0",
+  "description": "Express + PostgreSQL API для лабораторной WT-10",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": ["express", "postgresql", "api", "wt-lab10"],
+  "author": "Круталевич Д.В.",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
