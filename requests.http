@@ -11,3 +11,29 @@ Content-Type: application/json
   "name": "Ноутбук",
   "price": 2500
 }
+
+POST {{host}}/api/flights
+Content-Type: application/json
+
+{
+  "flightNumber": "AV-606",
+  "departure": "Минск",
+  "arrival": "Прага",
+  "price": 300,
+  "isAvailable": true,
+  "description": "Регулярный рейс по средам"
+}
+
+PUT {{host}}/api/flights/5
+Content-Type: application/json
+
+{
+  "flightNumber": "AV-505-NEW",
+  "departure": "Минск",
+  "arrival": "Вена",
+  "price": 350,
+  "isAvailable": true,
+  "description": "Обновлённое описание"
+}
+
+DELETE {{host}}/api/flights/5
